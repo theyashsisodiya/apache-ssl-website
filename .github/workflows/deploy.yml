@@ -1,0 +1,24 @@
+name: Deploy to EC2 Apache
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Deploy via SSH
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USER }}
+        key: ${{ secrets.PRIVATE_KEY }}
+        script: |
+          cd /var/www/aws.yash.gt.tc
+          git pull origin main
+          sudo systemctl restart apache2
